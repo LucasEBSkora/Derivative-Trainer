@@ -10,14 +10,17 @@ abstract class MathExpression {
   //whether the expression is multiplied by -1 or not
   final bool negative;
 
-  Widget toWidget({TextStyle style, @required BuildContext context}) {
-
-    print(style);
-    final DefaultTextStyle defaultTextStyle = DefaultTextStyle.of(context);
-    TextStyle effectiveTextStyle = style;
-    if (style == null || style.inherit)
-      effectiveTextStyle = defaultTextStyle.style.merge(style);
-    return this.toWidgetPrivate(scale: 1, showMinusSign: true, style: effectiveTextStyle);
+  Widget toWidget({TextStyle style}) {
+    return Builder(
+      builder: (BuildContext context) {
+        final DefaultTextStyle defaultTextStyle = DefaultTextStyle.of(context);
+        TextStyle effectiveTextStyle = style;
+        if (style == null || style.inherit)
+          effectiveTextStyle = defaultTextStyle.style.merge(style);
+        return this.toWidgetPrivate(
+            scale: 1, showMinusSign: true, style: effectiveTextStyle);
+      },
+    );
   }
 
   //returns the expression written as a widget.

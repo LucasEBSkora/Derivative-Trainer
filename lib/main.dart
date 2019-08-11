@@ -1,16 +1,30 @@
+import 'package:dxart/ExpressionGenerator/ExpressionGenerator.dart';
 import 'package:dxart/MathExpressions/MathExpressions.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  MathExpression exp = ExpressionGenerator().generateTwoVariableFunction(5);
+  final List<MathExpression> _expressions =
+      ExpressionGenerator().generateExpressions(10);
+
   @override
   Widget build(BuildContext context) {
     const TextStyle style = TextStyle(
-      color: Colors.red,
-      
-      fontSize: 25,
+      fontSize: 15,
     );
+
+    // print('exp: $exp');
+    // print('derivative: ${exp.derivative()}');
+
+    var fuck = MathVariable.x / MathNumber(2);
+    print('fuck: $fuck');
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -19,42 +33,46 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         body: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              Exp(MathNumber.e, MathVariable.x)
-                  .toWidget(style: style, context: context),
-              Exp(MathVariable.x, MathVariable.x)
-                  .derivative()
-                  .toWidget(style: style, context: context),
-              ((Exp(-MathVariable.x, MathNumber(2)) *
-                          -Log.create(MathVariable.x)) +
-                      MathNumber(-2))
-                  .toWidget(style: style, context: context),
-              (MathVariable.x + MathNumber(2) + (-Sin(MathVariable.x)))
-                  .toWidget(style: style, context: context),
-              SizedBox(
-                height: 50,
-              ),
-              ((MathNumber(1) + MathVariable.x) /
-                      MathVariable('f') *
-                      MathVariable.x *
-                      MathNumber(2) *
-                      Log.create(
-                          MathVariable.x, Exp(MathVariable.x, MathNumber(2))))
-                  .toWidget(style: style, context: context),
-              (MathVariable.x / MathNumber(2))
-                  .toWidget(style: style, context: context),
-              (MathVariable.x * MathNumber(2))
-                  .toWidget(style: style, context: context),
-              Log.create(MathVariable.x, MathVariable.x + MathNumber(2))
-                  .derivative()
-                  .toWidget(style: style, context: context),
-              (MathVariable.x *
-                      MathNumber(2) *
-                      (MathNumber(1) / Log.create(MathVariable.x)))
-                  .toWidget(style: style, context: context),
+                exp.toWidget(style: style),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: exp.derivative().toWidget(style: style)),
+                RaisedButton(
+                  child: Text('new expression'),
+                  onPressed: () {
+                    setState(() {
+                      exp = ExpressionGenerator().generateExpression(5);
+                    });
+                  },
+                ),
+              fuck.toWidget(style: style),
+              fuck.derivative().toWidget(style: style),
             ],
           ),
+          // child: ListView.builder(
+          //   itemBuilder: (BuildContext context, int i) {
+          //     if (i % 2 == 1) return Divider();
+          //     if (i / 2 >= _expressions.length)
+          //       _expressions
+          //           .addAll(ExpressionGenerator().generateExpressions(10));
+
+          //     return Column(
+          //       children: <Widget>[
+          //         SingleChildScrollView(
+          //           scrollDirection: Axis.horizontal,
+          //           child: _expressions[(i / 2).floor()].toWidget(style: style),
+          //         ),
+          //         SingleChildScrollView(
+          //             scrollDirection: Axis.horizontal,
+          //             child: _expressions[(i / 2).floor()]
+          //                 .derivative()
+          //                 .toWidget(style: style)),
+          //       ],
+          //     );
+          //   },
+          // ),
         ),
       ),
     );

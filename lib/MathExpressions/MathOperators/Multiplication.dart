@@ -19,7 +19,6 @@ class Multiplication extends MathOperator {
 
   //instantiates the class, performing simplifications when possible
   static MathExpression create(List<MathExpression> operands) {
-    print(operands);
     //if there are any zeroes in the list, returns zero
     if (operands.indexWhere((MathExpression m) {
           if (m is MathNumber)
@@ -31,14 +30,19 @@ class Multiplication extends MathOperator {
       return MathNumber(0);
     }
 
-    //removes ones from the list
+    //removes every number from the list, multiplies them all and add it again
+    int number = 1;
     operands.removeWhere((MathExpression m) {
       if (m is MathNumber) {
-        return m.value == 1;
+        number *= (m.negative ? -1 : 1) * m.value;
+        return true;
       } else
         return false;
     });
-    
+    if (number != 1) {
+      operands.insert(0, MathNumber(number));
+    }
+
     //if the list ends up empty, returns 1
     if (operands.length == 0) return MathNumber(1);
     //if there is a single element in the list, returns it directly instead of creating a Multiplication with a single operand
@@ -53,7 +57,7 @@ class Multiplication extends MathOperator {
       list.removeAt(index);
       list.insertAll(index, m.operands);
 
-      return Multiplication._(list);
+      return Multiplication.create(list);
     }
 
     //if there are any Divisions in the operands, returns another Division with the other operands included in the numerator
@@ -67,8 +71,13 @@ class Multiplication extends MathOperator {
 
       return Division.create(list, [m.denominator]);
     }
+    bool negative = false;
+    for (int i = 0; i < operands.length; ++i) {
+      if(operands[i].negative) negative = !negative;
+      operands[i] = operands[i].abs();
+    }
 
-    return Multiplication._(operands);
+    return Multiplication._(operands, negative);
   }
 
   @override
@@ -102,7 +111,12 @@ class Multiplication extends MathOperator {
         );
       }
     }
-
+    // return Wrap(
+    //   direction: Axis.horizontal,
+    //   alignment: WrapAlignment.center,
+    //   crossAxisAlignment: WrapCrossAlignment.center,
+    //   children: widgets,
+    // );
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -118,7 +132,7 @@ class Multiplication extends MathOperator {
     MathExpression df = Multiplication.create(ops);
 
     for (int i = 1; i < operands.length; ++i) {
-      ops = operands;
+      ops = List.from(operands);
       ops[i] = ops[i].derivative();
       df += Multiplication.create(ops);
     }

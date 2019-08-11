@@ -18,6 +18,20 @@ class Sum extends MathOperator {
 
   //actually instanciates Sum, performing simplifications when possible
   static MathExpression create(List<MathExpression> operands) {
+
+
+        //removes every number from the list, sums them all and add it again
+    int number = 0;
+    operands.removeWhere((MathExpression m) {
+      if (m is MathNumber) {
+        number += m.value;
+        return true;
+      } else
+        return false;
+    });
+    if (number != 0) {
+      operands.add(MathNumber(number));
+    }
     //removes zeros from the sum
     operands.removeWhere((MathExpression m) {
       if (m is MathNumber) {
@@ -25,6 +39,8 @@ class Sum extends MathOperator {
       } else
         return false;
     });
+
+    if (operands.length == 0) return MathNumber(0);
 
     //if there ends up being only one non-null operand, returns it
     if (operands.length == 1) return operands[0];
@@ -75,10 +91,15 @@ class Sum extends MathOperator {
         );
       }
     }
-
+    // return Wrap(
+    //   direction: Axis.horizontal,
+    //   alignment: WrapAlignment.center,
+    //   crossAxisAlignment: WrapCrossAlignment.center,
+    //   children: widgets,
+    // );
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: widgets,
     );

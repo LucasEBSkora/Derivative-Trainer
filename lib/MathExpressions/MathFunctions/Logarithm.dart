@@ -23,6 +23,7 @@ class Log extends MathExpression {
 
   @override
   MathExpression derivative() {
+    
     if (base is MathNumber) {
       return antilogarithm.derivative() / (Log.create(base) * antilogarithm);
     }

@@ -21,7 +21,7 @@ class Cos extends MathExpression {
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        ScaledText(((negative) ? '-' : '') + 'cos', scale),
+        ScaledText(((negative) ? '-' : '') + 'cos', scale, style: style,),
         Parentheses(
             child: expression.toWidgetPrivate(scale: scale, style: style),
             scale: scale,
